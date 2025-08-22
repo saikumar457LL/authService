@@ -1,0 +1,18 @@
+package org.ocean.authservice.exceptions;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Builder
+public class UserSignUpExceptions extends RuntimeException {
+    private String message;
+    private String error;
+    public UserSignUpExceptions(String error, String message) {
+        super(error + ": " + message);
+        this.error = error;
+        this.message = message;
+    }
+}

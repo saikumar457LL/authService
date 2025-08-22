@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: sai
+    password: sai
+    url: jdbc:postgresql://localhost:5432/ocean?currentSchema=ocean
+
+  jpa:
+    generate-ddl: false
+    properties:
+      hibernate:
+        dialect:
+
+  flyway:
+    enabled: false
+    default-schema: ocean
+
+jwt:
+  secret: fb4464ac0e0956f396b76e4b5bd24bfc0db303a8bb42074cd939c1bed05fb3ab
