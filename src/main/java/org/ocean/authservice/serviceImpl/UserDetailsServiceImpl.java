@@ -49,7 +49,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
 
     @Transactional
     @Override
-    public UserRegisterSuccessResponse register(@Validated UserSignUp userSignUp) {
+    public UserRegisterSuccessResponse register(@Validated UserSignUp userSignUp) throws RoleNotFoundException {
         if (userRepository.existsByUsername(userSignUp.getUsername())) {
             throw new UserSignUpExceptions("Username already exists", "Please try another username");
         }
