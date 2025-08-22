@@ -1,4 +1,4 @@
-package org.ocean.authservice.utils;
+package org.ocean.authservice.responses;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class UserRegisterSuccess {
+public class UserRegisterSuccessResponse {
     private String username;
     private String email;
     private String message;

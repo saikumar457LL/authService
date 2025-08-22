@@ -14,7 +14,7 @@ import org.ocean.authservice.repository.RolesRepository;
 import org.ocean.authservice.repository.UserRepository;
 import org.ocean.authservice.repository.UserRolesRepository;
 import org.ocean.authservice.services.UserDetailService;
-import org.ocean.authservice.utils.UserRegisterSuccess;
+import org.ocean.authservice.responses.UserRegisterSuccessResponse;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,7 +49,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
 
     @Transactional
     @Override
-    public UserRegisterSuccess register(@Validated UserSignUp userSignUp) {
+    public UserRegisterSuccessResponse register(@Validated UserSignUp userSignUp) {
         if (userRepository.existsByUsername(userSignUp.getUsername())) {
             throw new UserSignUpExceptions("Username already exists", "Please try another username");
         }
@@ -72,7 +72,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
 
         User savedUser = userRepository.save(user);
 
-        return UserRegisterSuccess.builder()
+        return UserRegisterSuccessResponse.builder()
                 .username(savedUser.getUsername())
                 .email(savedUser.getEmail())
                 .roles(savedUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
