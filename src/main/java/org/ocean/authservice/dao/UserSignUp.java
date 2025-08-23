@@ -1,6 +1,7 @@
 package org.ocean.authservice.dao;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.Data;
 @Data
 public class UserSignUp {
     @NotNull
+    @NotEmpty
     private String username;
     @Size(min = 8, max = 20)
     // TODO
