@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .path(request.getRequestURI())
-                .error(ex.getMessage())
+                .error("Validation Failed.")
                 .fieldValidationErrors(fieldErrors)
                 .build();
 
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
                         .success(false)
                         .status(HttpStatus.BAD_REQUEST.value())
                         .timestamp(LocalDateTime.now())
-                        .message("Validation Failed\nOne  or more fields are invalid")
+                        .message("Validation Failed. One  or more fields are invalid")
                         .error(errorResponse)
                         .build()
         );

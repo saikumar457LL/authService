@@ -83,6 +83,12 @@
             <artifactId>flyway-core</artifactId>
             <version>11.11.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <version>11.11.1</version>
+            <scope>runtime</scope>
+        </dependency>
 <!--        JWT-->
         <dependency>
             <groupId>com.auth0</groupId>
