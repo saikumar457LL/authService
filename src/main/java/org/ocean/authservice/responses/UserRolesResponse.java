@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
 @Data
 @Builder
-public class ModifyUserRolesResponse {
-    private String message;
-    private HttpStatus status;
+public class UserRolesResponse {
+    private String username;
+    private List<String> roles;
 }

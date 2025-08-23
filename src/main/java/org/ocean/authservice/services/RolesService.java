@@ -1,9 +1,9 @@
 package org.ocean.authservice.services;
 
 import org.ocean.authservice.dao.ModifyRoles;
-import org.ocean.authservice.responses.ModifyUserRolesResponse;
+import org.ocean.authservice.responses.UserRolesResponse;
 
 public interface RolesService {
 
-    ModifyUserRolesResponse modifyUserRoles(ModifyRoles modifyRoles);
+    UserRolesResponse modifyUserRoles(ModifyRoles modifyRoles);
 }
