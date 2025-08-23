@@ -2,9 +2,8 @@ package org.ocean.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.ocean.authservice.dao.UserSignUp;
-import org.ocean.authservice.exceptions.RoleNotFoundException;
-import org.ocean.authservice.serviceImpl.UserDetailsServiceImpl;
 import org.ocean.authservice.responses.UserRegisterSuccessResponse;
+import org.ocean.authservice.serviceImpl.UserDetailsServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +19,7 @@ public class SignUpController {
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     @PostMapping
-    ResponseEntity<UserRegisterSuccessResponse> signUp(@RequestBody @Validated UserSignUp userSignUp) throws RoleNotFoundException {
+    ResponseEntity<UserRegisterSuccessResponse> signUp(@RequestBody @Validated UserSignUp userSignUp) {
         return ResponseEntity.ok(userDetailsServiceImpl.register(userSignUp));
     }
 

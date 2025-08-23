@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
-public class RoleNotFoundException extends Exception {
+public class RoleNotFoundException extends RuntimeException {
     private String error;
     private String message;
 

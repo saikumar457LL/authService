@@ -2,6 +2,7 @@ package org.ocean.authservice.controllerAdvice;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.ocean.authservice.responses.ApiResponse;
 import org.ocean.authservice.responses.ErrorResponse;
 import org.ocean.authservice.responses.FieldValidationError;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,8 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(
+    public ResponseEntity<ApiResponse<Void>> handleValidationExceptions(
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
@@ -33,44 +33,59 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .error("Validation Failed")
-                .message("One or more fields are invalid")
-                .status(HttpStatus.BAD_REQUEST.value())
-                .timestamp(LocalDateTime.now())
                 .path(request.getRequestURI())
+                .error(ex.getMessage())
                 .fieldValidationErrors(fieldErrors)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ApiResponse.<Void>builder()
+                        .success(false)
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .timestamp(LocalDateTime.now())
+                        .message("Validation Failed\nOne  or more fields are invalid")
+                        .error(errorResponse)
+                        .build()
+        );
     }
 
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolation(
+    public ResponseEntity<ApiResponse<Void>> handleConstraintViolation(
             ConstraintViolationException ex,
             HttpServletRequest request) {
 
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .path(request.getRequestURI())
+                .error(ex.getMessage())
+                .build();
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                ErrorResponse.builder()
-                        .error("Invalid Request")
-                        .message(ex.getMessage())
+                ApiResponse.<Void>builder()
+                        .success(false)
                         .status(HttpStatus.BAD_REQUEST.value())
                         .timestamp(LocalDateTime.now())
-                        .path(request.getRequestURI())
+                        .message(ex.getMessage())
+                        .error(errorResponse)
                         .build()
         );
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex, HttpServletRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .path(request.getRequestURI())
+                .error(ex.getMessage())
+                .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                ErrorResponse.builder()
-                        .error("Internal Server Error")
-                        .message(ex.getMessage())
+                ApiResponse.<Void>builder()
+                        .success(false)
                         .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .timestamp(LocalDateTime.now())
-                        .path(request.getRequestURI())
+                        .message(ex.getMessage())
+                        .error(errorResponse)
                         .build()
         );
     }

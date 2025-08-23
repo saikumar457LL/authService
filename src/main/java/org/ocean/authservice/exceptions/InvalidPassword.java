@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
-public class InvalidPassword extends Exception {
+public class InvalidPassword extends RuntimeException {
     private String error;
     private String message;
     public InvalidPassword(String error, String message) {

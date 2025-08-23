@@ -1,18 +1,35 @@
 package org.ocean.authservice.controllerAdvice;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.ocean.authservice.exceptions.InvalidToken;
+import org.ocean.authservice.responses.ApiResponse;
+import org.ocean.authservice.responses.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class TokenExceptionsAdvices {
 
     @ExceptionHandler(InvalidToken.class)
-    public ResponseEntity<Map<String, Object>> TokenExceptionsAdvice(InvalidToken invalidToken) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", invalidToken.getError()));
+    public ResponseEntity<ApiResponse<InvalidToken>> invalidJwtToken(InvalidToken invalidToken, HttpServletRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .path(request.getRequestURI())
+                .error(invalidToken.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ApiResponse.<InvalidToken>builder()
+                        .success(false)
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .message(invalidToken.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .error(errorResponse)
+                        .build()
+        );
     }
 }

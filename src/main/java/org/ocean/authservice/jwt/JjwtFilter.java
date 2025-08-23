@@ -27,7 +27,6 @@ public class JjwtFilter extends OncePerRequestFilter {
     private final JjwtUtils jjwtUtils;
     private final UserRepository userRepository;
 
-    @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
