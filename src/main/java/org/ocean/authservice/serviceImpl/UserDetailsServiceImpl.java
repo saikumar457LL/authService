@@ -50,11 +50,8 @@ public class UserDetailsServiceImpl implements UserDetailService {
     @Transactional
     @Override
     public UserRegisterSuccessResponse register(@Validated UserSignUp userSignUp) {
-        if (userRepository.existsByUsername(userSignUp.getUsername())) {
-            throw new UserSignUpExceptions("USERNAME ALREADY TAKEN", "Please try another username");
-        }
-        if (userRepository.existsByEmail(userSignUp.getEmail())) {
-            throw new UserSignUpExceptions("EMAIL ALREADY TAKEN", "Please Try another email");
+        if (userRepository.existsByUsername(userSignUp.getUsername()) || userRepository.existsByEmail(userSignUp.getEmail())) {
+            throw new UserSignUpExceptions("Username or email already taken", "Please try different username/email");
         }
 
         User user = new User();
