@@ -1,7 +1,5 @@
 package org.ocean.authservice.controllerAdvice;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.ocean.authservice.exceptions.InvalidToken;
 import org.ocean.authservice.responses.ApiResponse;
@@ -16,23 +14,23 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class TokenExceptionsAdvices {
 
-    @ExceptionHandler({JwtException.class,ExpiredJwtException.class,InvalidToken.class})
-    public ResponseEntity<ApiResponse<InvalidToken>> invalidJwtToken(Exception exception, HttpServletRequest request) {
+    @ExceptionHandler(InvalidToken.class)
+    public ResponseEntity<ApiResponse<InvalidToken>> invalidJwtToken(Exception invalidToken, HttpServletRequest request) {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .path(request.getRequestURI())
-                .error(exception.getMessage())
+                .error(invalidToken.getMessage())
                 .build();
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 ApiResponse.<InvalidToken>builder()
                         .success(false)
                         .status(HttpStatus.UNAUTHORIZED.value())
-                        .message(exception.getMessage())
+                        .message(invalidToken.getMessage())
                         .timestamp(LocalDateTime.now())
                         .error(errorResponse)
                         .build()
         );
     }
-
+    
 }
