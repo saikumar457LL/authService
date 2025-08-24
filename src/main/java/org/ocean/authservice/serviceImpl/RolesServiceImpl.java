@@ -83,8 +83,6 @@ public class RolesServiceImpl implements RolesService {
         if(rolesToRemove.isEmpty() && rolesToAdd.isEmpty()){
             throw new RoleNotFoundException("Add roles to remove/add","Add Roles");
         }
-
-        Set<Roles> finalRolesToRemove = new HashSet<>(rolesRepository.findByRoleNameIn(rolesToRemove));
         Set<Roles> finalRolesToAdd = new HashSet<>(rolesRepository.findByRoleNameIn(rolesToAdd));
 
         List<UserRoles> currentUserRoles = userRolesRepository.findAllByUser(user);
