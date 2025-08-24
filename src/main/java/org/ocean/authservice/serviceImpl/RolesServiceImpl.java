@@ -9,6 +9,7 @@ import org.ocean.authservice.entity.Roles;
 import org.ocean.authservice.entity.User;
 import org.ocean.authservice.entity.UserRoles;
 import org.ocean.authservice.exceptions.RoleExists;
+import org.ocean.authservice.exceptions.RoleNotFoundException;
 import org.ocean.authservice.repository.RolesRepository;
 import org.ocean.authservice.repository.UserRepository;
 import org.ocean.authservice.repository.UserRolesRepository;
@@ -20,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -62,30 +60,32 @@ public class RolesServiceImpl implements RolesService {
     @Transactional
     @Override
     public UserRolesResponse modifyUserRoles(ModifyRoles modifyRoles) {
-        String actingUser = userUtils.getLoggedInUser().getUsername();
-        List<String> allowedRolesOnly = userUtils.getLoggedInUser().getRoles();
-
-        LinkedList<String> rolesToRemove = new LinkedList<>();
-        LinkedList<String> rolesToAdd = new LinkedList<>();
-
-        if (modifyRoles.getRemovedRoles() != null) {
-            rolesToRemove.addAll(modifyRoles.getRemovedRoles().stream()
-                    .filter(allowedRolesOnly::contains).toList());
-        }
-
-        if (modifyRoles.getAddedRoles() != null) {
-            rolesToAdd.addAll(modifyRoles.getAddedRoles().stream()
-                    .filter(allowedRolesOnly::contains).toList());
-        }
-
-        log.info("User '{}' modifying roles for '{}': ADD: {}, REMOVE: {}",
-                actingUser, modifyRoles.getUsername(), rolesToAdd, rolesToRemove);
 
         User user = userRepository.findByUsername(modifyRoles.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException(modifyRoles.getUsername()));
+                .orElseThrow(() -> new UsernameNotFoundException("User: "+modifyRoles.getUsername()+" not found"));
 
-        List<Roles> finalRolesToRemove = rolesRepository.findByRoleNameIn(rolesToRemove);
-        List<Roles> finalRolesToAdd = rolesRepository.findByRoleNameIn(rolesToAdd);
+        String actingUser = userUtils.getLoggedInUser().getUsername();
+        Set<String> allowedRolesOnly = new HashSet<>(userUtils.getLoggedInUser().getRoles());
+
+        Set<String> rolesToRemove = new HashSet<>();
+        Set<String> rolesToAdd = new HashSet<>();
+
+        if (!modifyRoles.getRemovedRoles().isEmpty()) {
+            rolesToRemove.addAll(modifyRoles.getRemovedRoles().stream()
+                    .filter(allowedRolesOnly::contains).collect(Collectors.toSet()));
+        }
+
+        if (!modifyRoles.getAddedRoles().isEmpty()) {
+            rolesToAdd.addAll(modifyRoles.getAddedRoles().stream()
+                    .filter(allowedRolesOnly::contains).collect(Collectors.toSet()));
+        }
+
+        if(rolesToRemove.isEmpty() && rolesToAdd.isEmpty()){
+            throw new RoleNotFoundException("Add roles to remove/add","Add Roles");
+        }
+
+        Set<Roles> finalRolesToRemove = new HashSet<>(rolesRepository.findByRoleNameIn(rolesToRemove));
+        Set<Roles> finalRolesToAdd = new HashSet<>(rolesRepository.findByRoleNameIn(rolesToAdd));
 
         List<UserRoles> currentUserRoles = userRolesRepository.findAllByUser(user);
 
@@ -93,29 +93,43 @@ public class RolesServiceImpl implements RolesService {
                 .map(userRole -> userRole.getRole().getRoleName())
                 .collect(Collectors.toSet());
 
-        if (existingRoleNames.size() == rolesToRemove.size() && finalRolesToAdd.isEmpty()) {
+        boolean removingAll = rolesToRemove.containsAll(existingRoleNames);
+
+        if (removingAll && finalRolesToAdd.isEmpty()) {
             throw new IllegalStateException("Cannot remove all roles from a user without assigning at least one role");
         }
 
-        finalRolesToRemove.forEach(role -> {
-            currentUserRoles.stream()
-                    .filter(currentUser -> currentUser.getRole().getRoleName().equals(role.getRoleName()))
-                    .findFirst()
-                    .ifPresent(userRolesRepository::delete);
-        });
 
-        finalRolesToAdd.forEach(role -> {
-            if (!existingRoleNames.contains(role.getRoleName())) {
-                UserRoles userRoles = new UserRoles();
-                userRoles.setUser(user);
-                userRoles.setRole(role);
-                userRolesRepository.save(userRoles);
-            }
-        });
+
+        List<UserRoles> rolesMarkedForDeletion = currentUserRoles.stream()
+                .filter(currentUser -> rolesToRemove.contains(currentUser.getRole().getRoleName())).toList();
+
+        userRolesRepository.deleteAll(rolesMarkedForDeletion);
+
+        // refresh after deletion
+        Set<String> updatedRoleNamesAfterDeletion = userRolesRepository.findAllByUser(user).stream()
+                .map(userRole -> userRole.getRole().getRoleName())
+                .collect(Collectors.toSet());
+
+        // STEP 2: now decide which to insert (use updated roles, not old)
+        List<UserRoles> rolesMarkedForInsert = finalRolesToAdd.stream()
+                .filter(role -> !updatedRoleNamesAfterDeletion.contains(role.getRoleName()))
+                .map(role -> {
+                    UserRoles userRoles = new UserRoles();
+                    userRoles.setUser(user);
+                    userRoles.setRole(role);
+                    return userRoles;
+                }).toList();
+        userRolesRepository.saveAll(rolesMarkedForInsert);
+
+        log.info("User '{}' modifying roles for '{}': ADD: {}, REMOVE: {}",
+                actingUser, modifyRoles.getUsername(), rolesMarkedForInsert.stream().map(r -> r.getRole().getRoleName()).toList(), rolesMarkedForDeletion.stream().map(r -> r.getRole().getRoleName()).toList());
 
         List<String> updatedRoleNames = userRolesRepository.findAllByUser(user).stream()
                 .map(userRole -> userRole.getRole().getRoleName())
                 .toList();
+
+        log.info("Final roles for user '{}': {}", user.getUsername(), updatedRoleNames);
 
         return UserRolesResponse.builder()
                 .username(user.getUsername())

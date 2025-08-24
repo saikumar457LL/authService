@@ -13,6 +13,8 @@ public class ModifyRoles {
     @NotNull
     @NotEmpty
     private String username;
+    @NotNull
     private List<String> removedRoles;
+    @NotNull
     private List<String> addedRoles;
 }
