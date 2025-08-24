@@ -4,9 +4,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ocean.authservice.dao.ModifyRoles;
+import org.ocean.authservice.dao.RolesAddDao;
 import org.ocean.authservice.entity.Roles;
 import org.ocean.authservice.entity.User;
 import org.ocean.authservice.entity.UserRoles;
+import org.ocean.authservice.exceptions.RoleExists;
 import org.ocean.authservice.repository.RolesRepository;
 import org.ocean.authservice.repository.UserRepository;
 import org.ocean.authservice.repository.UserRolesRepository;
@@ -16,6 +18,9 @@ import org.ocean.authservice.utils.UserUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +35,21 @@ public class RolesServiceImpl implements RolesService {
     private final UserRolesRepository userRolesRepository;
     private final RolesRepository rolesRepository;
     private final UserUtils userUtils;
+
+
+    @Transactional
+    @Override
+    public void addNewRole(RolesAddDao roles) {
+        if (rolesRepository.existsByRoleName(roles.getRoleName())) {
+            throw new RoleExists("The given Role: "+roles.getRoleName() +" already exists","Role exists");
+        }
+        Roles role = new Roles();
+        role.setRoleName(roles.getRoleName());
+        role.setCreatedDate(Date.from(Instant.now()));
+        role.setModifiedDate(Date.from(Instant.now()));
+        rolesRepository.save(role);
+    }
+
 
     /**
      * example

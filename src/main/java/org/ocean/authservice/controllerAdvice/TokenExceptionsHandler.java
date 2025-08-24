@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class TokenExceptionsAdvices {
+public class TokenExceptionsHandler {
 
     @ExceptionHandler(InvalidToken.class)
     public ResponseEntity<ApiResponse<InvalidToken>> invalidJwtToken(Exception invalidToken, HttpServletRequest request) {

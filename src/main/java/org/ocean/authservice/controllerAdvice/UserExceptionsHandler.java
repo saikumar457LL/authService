@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class UserExceptionsAdvice {
+public class UserExceptionsHandler {
 
     @ExceptionHandler({UsernameNotFoundException.class,InvalidPassword.class})
     public ResponseEntity<ApiResponse<UsernameNotFoundException>> handleUsernameNotFoundException(UsernameNotFoundException e, HttpServletRequest request) {
