@@ -20,7 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,6 +66,9 @@ public class RolesServiceImpl implements RolesService {
         String actingUser = userUtils.getLoggedInUser().getUsername();
         Set<String> allowedRolesOnly = new HashSet<>(userUtils.getLoggedInUser().getRoles());
 
+        Set<String> commonRoles = new HashSet<>(modifyRoles.getRemovedRoles());
+        commonRoles.retainAll(modifyRoles.getAddedRoles());
+
         Set<String> rolesToRemove = new HashSet<>();
         Set<String> rolesToAdd = new HashSet<>();
 
@@ -79,9 +81,11 @@ public class RolesServiceImpl implements RolesService {
             rolesToAdd.addAll(modifyRoles.getAddedRoles().stream()
                     .filter(allowedRolesOnly::contains).collect(Collectors.toSet()));
         }
+        rolesToRemove.removeAll(commonRoles);
+        rolesToAdd.removeAll(commonRoles);
 
         if(rolesToRemove.isEmpty() && rolesToAdd.isEmpty()){
-            throw new RoleNotFoundException("Add roles to remove/add","Add Roles");
+            throw new RoleNotFoundException("No valid roles provided to add or remove", "Modify Roles");
         }
         Set<Roles> finalRolesToAdd = new HashSet<>(rolesRepository.findByRoleNameIn(rolesToAdd));
 
@@ -109,7 +113,7 @@ public class RolesServiceImpl implements RolesService {
                 .map(userRole -> userRole.getRole().getRoleName())
                 .collect(Collectors.toSet());
 
-        // STEP 2: now decide which to insert (use updated roles, not old)
+        // use updated roles
         List<UserRoles> rolesMarkedForInsert = finalRolesToAdd.stream()
                 .filter(role -> !updatedRoleNamesAfterDeletion.contains(role.getRoleName()))
                 .map(role -> {
