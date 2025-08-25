@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.ocean.authservice.constants.Roles;
 import org.ocean.authservice.dao.TokenDto;
+import org.ocean.authservice.dao.UserDetailsDao;
 import org.ocean.authservice.dao.UserLogin;
 import org.ocean.authservice.dao.UserSignUp;
 import org.ocean.authservice.entity.User;
@@ -13,9 +14,8 @@ import org.ocean.authservice.exceptions.UserSignUpExceptions;
 import org.ocean.authservice.jwt.JjwtUtils;
 import org.ocean.authservice.repository.RolesRepository;
 import org.ocean.authservice.repository.UserRepository;
-import org.ocean.authservice.repository.UserRolesRepository;
 import org.ocean.authservice.responses.UserRegisterSuccessResponse;
-import org.ocean.authservice.services.UserDetailService;
+import org.ocean.authservice.services.UserDetailsService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,14 +23,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl implements UserDetailService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RolesRepository rolesRepository;
-    private final UserRolesRepository userRolesRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JjwtUtils jjwtUtils;
 
@@ -75,5 +75,16 @@ public class UserDetailsServiceImpl implements UserDetailService {
                 .roles(savedUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .message("user created successfully")
                 .build();
+    }
+
+    @Override
+    public List<UserDetailsDao> fetchAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> UserDetailsDao.builder()
+                        .username(user.getUsername())
+                        .email(user.getEmail())
+                        .enabled(user.isEnabled())
+                        .roles(user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                        .build()).collect(Collectors.toList());
     }
 }
