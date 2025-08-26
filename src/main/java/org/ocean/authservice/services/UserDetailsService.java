@@ -14,4 +14,6 @@ public interface UserDetailsService extends org.springframework.security.core.us
     TokenDto getToken(UserLogin userLogin) throws InvalidPassword;
     UserRegisterSuccessResponse register(UserSignUp userSignUp) throws RoleNotFoundException;
     List<UserDetailsDao> fetchAllUsers();
+    boolean userExists(String username);
+    boolean emailExists(String  email);
 }

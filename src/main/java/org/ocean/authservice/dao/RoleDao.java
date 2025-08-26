@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RolesAddDao {
+public class RoleDao {
     @NotNull
     @NotEmpty
     private String roleName;

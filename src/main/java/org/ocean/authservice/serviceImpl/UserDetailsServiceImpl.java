@@ -87,4 +87,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .roles(user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                         .build()).collect(Collectors.toList());
     }
+
+    @Override
+    public boolean userExists(String username) {
+        boolean usernameStatus = userRepository.existsByUsername(username);
+        if(usernameStatus){
+            throw new UserSignUpExceptions("Username exists", "Username already exists");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean emailExists(String email) {
+        boolean emailStatus = userRepository.existsByEmail(email);
+        if(emailStatus){
+            throw new UserSignUpExceptions("Email exists", "Email already exists");
+        }
+        return false;
+    }
 }

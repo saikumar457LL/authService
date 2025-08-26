@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ocean.authservice.dao.ModifyRoles;
-import org.ocean.authservice.dao.RolesAddDao;
+import org.ocean.authservice.dao.RoleDao;
 import org.ocean.authservice.entity.Roles;
 import org.ocean.authservice.entity.User;
 import org.ocean.authservice.entity.UserRoles;
@@ -36,7 +36,7 @@ public class RolesServiceImpl implements RolesService {
 
     @Transactional
     @Override
-    public void addNewRole(RolesAddDao roles) {
+    public void addNewRole(RoleDao roles) {
         if (rolesRepository.existsByRoleName(roles.getRoleName())) {
             throw new RoleExists("The given Role: "+roles.getRoleName() +" already exists","Role exists");
         }
@@ -137,5 +137,10 @@ public class RolesServiceImpl implements RolesService {
                 .username(user.getUsername())
                 .roles(updatedRoleNames)
                 .build();
+    }
+
+    @Override
+    public Set<RoleDao> fetchAllRoles() {
+        return rolesRepository.findAll().stream().map(role -> RoleDao.builder().roleName(role.getRoleName()).build()).collect(Collectors.toSet());
     }
 }
