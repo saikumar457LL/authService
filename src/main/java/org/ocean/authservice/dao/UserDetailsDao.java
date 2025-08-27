@@ -12,4 +12,5 @@ public class UserDetailsDao {
     private String email;
     private List<String> roles;
     private boolean enabled;
+    private UserProfileDao userProfileDao;
 }

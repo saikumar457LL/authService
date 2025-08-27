@@ -28,6 +28,10 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_profile",unique = true)
+    private UserProfile userProfile;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
