@@ -3,6 +3,7 @@ package org.ocean.authservice.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -13,11 +14,11 @@ public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String firstname;
-    private String lastname;
-    private Date dateofbirth;
+    private String first_name;
+    private String last_name;
+    private LocalDate date_of_birth;
     private boolean gender;
-    private Date joiningdate;
-    private Date enddate;
+    private LocalDate joining_date;
+    private LocalDate end_date;
 
 }
