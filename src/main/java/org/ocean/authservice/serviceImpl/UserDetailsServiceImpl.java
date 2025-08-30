@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,10 +119,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user;
 
         if (userProfileDao.getUsername() != null) {
-            if(!userUtils.loggedInUsername().equals(userProfileDao.getUsername()) && userUtils.getLoggedInRoles().contains(Roles.ROLE_ADMIN.toString())) {
-                user = userRepository.findByUsername(userProfileDao.getUsername()).orElseThrow(() -> new UsernameNotFoundException("USERNAME NOT FOUND"));
-            } else
-                user = userRepository.findByUsername(userProfileDao.getUsername()).orElseThrow(() -> new UsernameNotFoundException("USERNAME NOT FOUND"));
+            if(!userUtils.loggedInUsername().equals(userProfileDao.getUsername()) && !userUtils.getLoggedInRoles().contains(Roles.ROLE_ADMIN.toString())) {
+                throw new IllegalArgumentException("You are not allowed to update another user's details.");
+            }
+            // admin is updating the user details
+            user = userRepository.findByUsername(userProfileDao.getUsername()).orElseThrow(() -> new UsernameNotFoundException("USERNAME NOT FOUND"));
         }
         else
             user = userRepository.findByUsername(userUtils.loggedInUsername()).orElseThrow(() -> new UsernameNotFoundException("USERNAME NOT FOUND"));
@@ -132,19 +134,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             user.setUserProfile(existiUserProfile);
         }
 
-        if (null != userProfileDao.getFirst_name())
-            existiUserProfile.setFirst_name(userProfileDao.getFirst_name());
+        updateProfileField(existiUserProfile::setFirst_name, userProfileDao.getFirst_name());
+        updateProfileField(existiUserProfile::setLast_name, userProfileDao.getLast_name());
 
-        if (null != userProfileDao.getLast_name())
-            existiUserProfile.setLast_name(userProfileDao.getLast_name());
-
-        if (null != userProfileDao.getDate_of_birth())
+        if(userProfileDao.getDate_of_birth() != null) {
             existiUserProfile.setDate_of_birth(userProfileDao.getDate_of_birth());
+        }
 
         if(userUtils.getLoggedInRoles().contains(Roles.ROLE_ADMIN.toString())){
             // job tile
-            if(null != userProfileDao.getJob_title())
-                existiUserProfile.setJob_title(userProfileDao.getJob_title());
+            updateProfileField(existiUserProfile::setJob_title, userProfileDao.getJob_title());
 
             // line manager update
             if(null != userProfileDao.getLine_manager()) {
@@ -158,9 +157,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     User newLineManager = userRepository.findByUsername(lineManager).orElseThrow(() -> new UsernameNotFoundException("Line manager not found"));
                     existiUserProfile.setLineManager(newLineManager);
                 }
+            } else {
+                existiUserProfile.setLineManager(null);
             }
+
         }
 
         return userProfileMapper.toDto(userProfileRepository.save(existiUserProfile));
+    }
+
+    private void updateProfileField(Consumer<String> setter, String value) {
+        if (value != null) {
+            setter.accept(value);
+        }
     }
 }
