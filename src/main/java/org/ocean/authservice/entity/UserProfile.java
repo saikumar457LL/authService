@@ -12,13 +12,17 @@ import java.util.Date;
 public class UserProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String first_name;
     private String last_name;
-    private LocalDate date_of_birth;
+    private String job_title;
     private boolean gender;
+    private LocalDate date_of_birth;
     private LocalDate joining_date;
     private LocalDate end_date;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "line_manager")
+    private User lineManager;
 }

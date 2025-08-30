@@ -3,12 +3,15 @@ package org.ocean.authservice.utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ocean.authservice.dao.UserDetailsDao;
+import org.ocean.authservice.entity.Roles;
 import org.ocean.authservice.entity.User;
 import org.ocean.authservice.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -27,6 +30,10 @@ public class UserUtils {
                 .build();
     }
 
+    public String loggedInUsername(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
     public UserDetailsDao getUserDetails(String username){
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         return UserDetailsDao.builder()
@@ -35,5 +42,13 @@ public class UserUtils {
                 .roles(user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                 .enabled(user.isEnabled())
                 .build();
+    }
+
+    public List<String> getLoggedInRoles(){
+        return getLoggedInUser().getRoles();
+    }
+
+    public List<String > getRoles(String username){
+        return getUserDetails(username).getRoles();
     }
 }

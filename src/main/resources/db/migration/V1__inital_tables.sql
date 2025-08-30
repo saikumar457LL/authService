@@ -17,7 +17,7 @@ CREATE TABLE ocean.roles
 
 CREATE TABLE ocean.users
 (
-    id                      BIGSERIAL PRIMARY KEY,
+    id                      SERIAL PRIMARY KEY,
     username                VARCHAR(255) NOT NULL,
     password                VARCHAR(255) NOT NULL,
     email                   VARCHAR(255) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE ocean.users
 
 CREATE TABLE ocean.user_roles
 (
-    id            BIGSERIAL PRIMARY KEY,
+    id            SERIAL PRIMARY KEY,
     user_id       BIGINT NOT NULL,
     role_id       BIGINT NOT NULL,
     created_date  TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,

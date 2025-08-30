@@ -1,9 +1,6 @@
 package org.ocean.authservice.services;
 
-import org.ocean.authservice.dao.TokenDto;
-import org.ocean.authservice.dao.UserDetailsDao;
-import org.ocean.authservice.dao.UserLogin;
-import org.ocean.authservice.dao.UserSignUp;
+import org.ocean.authservice.dao.*;
 import org.ocean.authservice.exceptions.InvalidPassword;
 import org.ocean.authservice.exceptions.RoleNotFoundException;
 import org.ocean.authservice.responses.UserRegisterSuccessResponse;
@@ -16,4 +13,5 @@ public interface UserDetailsService extends org.springframework.security.core.us
     List<UserDetailsDao> fetchAllUsers();
     boolean userExists(String username);
     boolean emailExists(String  email);
+    UserProfileDao updateUserProfile(UserProfileDao userProfileDao);
 }
