@@ -122,7 +122,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             if(!userUtils.loggedInUsername().equals(userProfileDao.getUsername()) && !userUtils.getLoggedInRoles().contains(Roles.ROLE_ADMIN.toString())) {
                 throw new IllegalArgumentException("You are not allowed to update another user's details.");
             }
-            // admin is updating the user details
+            // username equals or admin is updating the user details
             user = userRepository.findByUsername(userProfileDao.getUsername()).orElseThrow(() -> new UsernameNotFoundException("USERNAME NOT FOUND"));
         }
         else
