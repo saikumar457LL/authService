@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -136,14 +137,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         updateProfileField(existiUserProfile::setFirst_name, userProfileDao.getFirst_name());
         updateProfileField(existiUserProfile::setLast_name, userProfileDao.getLast_name());
-
-        if(userProfileDao.getDate_of_birth() != null) {
-            existiUserProfile.setDate_of_birth(userProfileDao.getDate_of_birth());
-        }
+        updateProfileBooleanField(existiUserProfile::setGender,userProfileDao.isGender());
+        updateProfileDateField(existiUserProfile::setJoining_date, userProfileDao.getJoining_date());
 
         if(userUtils.getLoggedInRoles().contains(Roles.ROLE_ADMIN.toString())){
             // job tile
             updateProfileField(existiUserProfile::setJob_title, userProfileDao.getJob_title());
+
+            updateProfileDateField(existiUserProfile::setJoining_date,userProfileDao.getJoining_date());
+            updateProfileDateField(existiUserProfile::setEnd_date,userProfileDao.getEnd_date());
 
             // line manager update
             if(null != userProfileDao.getLine_manager()) {
@@ -158,7 +160,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     existiUserProfile.setLineManager(newLineManager);
                 }
             } else {
-                existiUserProfile.setLineManager(null);
+                //existiUserProfile.setLineManager(null);
             }
 
         }
@@ -168,6 +170,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private void updateProfileField(Consumer<String> setter, String value) {
         if (value != null) {
+            setter.accept(value);
+        }
+    }
+    private void updateProfileBooleanField(Consumer<Boolean> setter, Boolean value) {
+        if (value != null) {
+            setter.accept(value);
+        }
+    }
+    private void updateProfileDateField(Consumer<LocalDate> setter, LocalDate value) {
+        if(value != null) {
             setter.accept(value);
         }
     }
