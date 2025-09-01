@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.ocean.authservice.dao.TokenDto;
 import org.ocean.authservice.exceptions.InvalidToken;
 import org.ocean.authservice.properties.JjwtProperties;
+import org.ocean.authservice.utils.UserUtils;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -21,6 +22,7 @@ public class JjwtUtils {
     private final JjwtProperties jwtProperties;
 
     private final KeyManager keyManager;
+    private final UserUtils userUtils;
 
     private SecretKey getSecurityKey() {
         return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
@@ -51,7 +53,7 @@ public class JjwtUtils {
 
     private Claims parseClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSecurityKey())
+                .verifyWith(keyManager.getCurrentKey().getKeyPair().getPublic())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
