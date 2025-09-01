@@ -21,7 +21,7 @@ import java.util.*;
 public class JwksController {
     private final KeyManager keyManager;
 
-    @GetMapping
+    @GetMapping("/jwks.json")
     public ResponseEntity<ApiResponse<Object>> publicJwks() {
         List<Map<String, Object>> jwkList = new ArrayList<>();
 
