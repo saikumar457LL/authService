@@ -37,6 +37,7 @@ public class JjwtUtils {
 
         String token = Jwts.builder()
                 .signWith(currentKey.getPrivate(),Jwts.SIG.RS256)
+                .claim("roles",userUtils.getRoles(username))
                 .subject(username)
                 .issuedAt(iAt)
                 .expiration(iEt)
