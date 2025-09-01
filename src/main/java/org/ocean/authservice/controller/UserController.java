@@ -23,7 +23,7 @@ public class UserController {
     private final UserDetailsService userDetailsService;
 
     @PatchMapping
-    public ResponseEntity<ApiResponse<UserProfileDao>> test(@RequestBody UserProfileDao userProfileDao) {
+    public ResponseEntity<ApiResponse<UserProfileDao>> modifyUserProfile(@RequestBody UserProfileDao userProfileDao) {
         UserProfileDao updateUserProfile = userDetailsService.updateUserProfile(userProfileDao);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(
