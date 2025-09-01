@@ -135,11 +135,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             user.setUserProfile(existiUserProfile);
         }
 
+        // user update their permissive fields
         updateProfileField(existiUserProfile::setFirst_name, userProfileDao.getFirst_name());
         updateProfileField(existiUserProfile::setLast_name, userProfileDao.getLast_name());
         updateProfileBooleanField(existiUserProfile::setGender,userProfileDao.isGender());
         updateProfileDateField(existiUserProfile::setJoining_date, userProfileDao.getJoining_date());
 
+        // only hr,admin,super persons can do
         if(userUtils.getLoggedInRoles().contains(Roles.ROLE_ADMIN.toString())){
             // job tile
             updateProfileField(existiUserProfile::setJob_title, userProfileDao.getJob_title());
@@ -159,9 +161,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     User newLineManager = userRepository.findByUsername(lineManager).orElseThrow(() -> new UsernameNotFoundException("Line manager not found"));
                     existiUserProfile.setLineManager(newLineManager);
                 }
-            } else {
-                //existiUserProfile.setLineManager(null);
-            }
+            } /*else {
+                existiUserProfile.setLineManager(null);
+            }*/
 
         }
 

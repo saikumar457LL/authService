@@ -10,6 +10,7 @@ import org.ocean.authservice.properties.JjwtProperties;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.security.KeyPair;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -19,6 +20,8 @@ import java.util.Date;
 public class JjwtUtils {
     private final JjwtProperties jwtProperties;
 
+    private final KeyManager keyManager;
+
     private SecretKey getSecurityKey() {
         return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
     }
@@ -27,11 +30,15 @@ public class JjwtUtils {
         Instant now = Instant.now();
         Date iAt = Date.from(now);
         Date iEt = Date.from(now.plusSeconds(Duration.ofHours(1).toSeconds()));
+        KeyPair currentKey = keyManager.getCurrentKey().getKeyPair();
+        String currentKeyId = keyManager.getCurrentKeyId();
+
         String token = Jwts.builder()
-                .signWith(getSecurityKey())
+                .signWith(currentKey.getPrivate(),Jwts.SIG.RS256)
                 .subject(username)
                 .issuedAt(iAt)
                 .expiration(iEt)
+                .header().add("kid",currentKeyId).and()
                 .compact();
 
         return TokenDto.builder()
