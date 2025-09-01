@@ -2,7 +2,6 @@ package org.ocean.authservice.responses;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 

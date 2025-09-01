@@ -3,7 +3,6 @@ package org.ocean.authservice.utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ocean.authservice.dao.UserDetailsDao;
-import org.ocean.authservice.entity.Roles;
 import org.ocean.authservice.entity.User;
 import org.ocean.authservice.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
