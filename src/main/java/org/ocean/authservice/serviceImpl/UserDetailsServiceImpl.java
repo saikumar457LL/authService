@@ -50,7 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (!bCryptPasswordEncoder.matches(userLogin.getPassword(), user.getPassword())) {
             throw InvalidPassword.builder().error("Invalid credentials").message("Please Enter Valid credentials").build();
         }
-        return jjwtUtils.generateToken(user.getUsername());
+        return jjwtUtils.generateToken(user.getUsername(),user.getUuid());
     }
 
     @Transactional

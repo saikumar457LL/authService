@@ -15,6 +15,7 @@ import java.security.KeyPair;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class JjwtUtils {
         return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
     }
 
-    public TokenDto generateToken(String username) {
+    public TokenDto generateToken(String username, UUID userId) {
         Instant now = Instant.now();
         Date iAt = Date.from(now);
         Date iEt = Date.from(now.plusSeconds(Duration.ofHours(1).toSeconds()));
@@ -38,7 +39,8 @@ public class JjwtUtils {
         String token = Jwts.builder()
                 .signWith(currentKey.getPrivate(),Jwts.SIG.RS256)
                 .claim("roles",userUtils.getRoles(username))
-                .subject(username)
+                .claim("preferred_username", username)
+                .subject(userId.toString())
                 .issuedAt(iAt)
                 .expiration(iEt)
                 .header().add("kid",currentKeyId).and()
