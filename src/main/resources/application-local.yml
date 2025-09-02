@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: sai
     password: sai
-    url: jdbc:postgresql://localhost:5432/ocean?currentSchema=ocean
+    url: jdbc:postgresql://localhost:5432/ocean?currentSchema=authentication
 
   jpa:
     generate-ddl: false
@@ -13,7 +13,7 @@ spring:
 
   flyway:
     enabled: true
-    default-schema: ocean
+    default-schema: authentication
 
 jwt:
   secret: fb4464ac0e0956f396b76e4b5bd24bfc0db303a8bb42074cd939c1bed05fb3ab

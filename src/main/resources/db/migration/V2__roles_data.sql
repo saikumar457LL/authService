@@ -1,4 +1,4 @@
-INSERT INTO ocean.roles (role_name, modified_date)
+INSERT INTO roles (role_name, modified_date)
 VALUES
     ('ROLE_USER', NOW()),
     ('ROLE_ADMIN', NOW()),

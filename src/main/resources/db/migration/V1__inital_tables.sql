@@ -1,12 +1,7 @@
--- ============================================
--- V1 Initial Schema for Ocean Auth Service
--- PostgreSQL 17.5
--- User <-> Roles ManyToMany mapping
--- ============================================
 
-CREATE SCHEMA IF NOT EXISTS ocean;
+CREATE SCHEMA IF NOT EXISTS authentication;
 
-CREATE TABLE ocean.roles
+CREATE TABLE roles
 (
     id            BIGSERIAL PRIMARY KEY,
     role_name     VARCHAR(255) NOT NULL,
@@ -15,7 +10,7 @@ CREATE TABLE ocean.roles
     CONSTRAINT uc_roles_rolename UNIQUE (role_name)
 );
 
-CREATE TABLE ocean.users
+CREATE TABLE users
 (
     id                      SERIAL PRIMARY KEY,
     username                VARCHAR(255) NOT NULL,
@@ -29,14 +24,14 @@ CREATE TABLE ocean.users
     CONSTRAINT uc_user_email UNIQUE (email)
 );
 
-CREATE TABLE ocean.user_roles
+CREATE TABLE user_roles
 (
     id            SERIAL PRIMARY KEY,
     user_id       BIGINT NOT NULL,
     role_id       BIGINT NOT NULL,
     created_date  TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     modified_date TIMESTAMP WITHOUT TIME ZONE,
-    CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES ocean.users (id) ON DELETE CASCADE,
-    CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES ocean.roles (id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
     CONSTRAINT uc_user_roles UNIQUE (user_id, role_id) -- prevent duplicate mappings
 );
