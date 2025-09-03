@@ -69,7 +69,7 @@ public class JjwtUtils {
     public String getUserName(String token) throws InvalidToken {
         Claims claims = parseClaims(token);
         if (validateToken(claims.getExpiration())) {
-            return claims.getSubject();
+            return claims.get("preferred_username").toString();
         }
         throw InvalidToken.builder().error("TOKEN EXPIRED").message("Invalid token, please generate new token").build();
     }
