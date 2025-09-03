@@ -25,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         User user = new User();
         user.setUsername(userSignUp.getUsername());
+        user.setUuid(UUID.randomUUID());
         user.setPassword(bCryptPasswordEncoder.encode(userSignUp.getPassword()));
         user.setEmail(userSignUp.getEmail());
         user.setEnabled(true);
