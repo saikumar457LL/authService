@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.ocean.authservice.dao.UserProfileDao;
+import org.ocean.authservice.dto.UserProfileDao;
 import org.ocean.authservice.entity.User;
 import org.ocean.authservice.entity.UserProfile;
 import org.ocean.authservice.utils.GenericMapper;

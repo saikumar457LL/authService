@@ -1,4 +1,4 @@
-package org.ocean.authservice.dao;
+package org.ocean.authservice.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

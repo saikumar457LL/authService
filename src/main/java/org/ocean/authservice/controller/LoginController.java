@@ -1,8 +1,8 @@
 package org.ocean.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.ocean.authservice.dao.TokenDto;
-import org.ocean.authservice.dao.UserLogin;
+import org.ocean.authservice.dto.TokenDto;
+import org.ocean.authservice.dto.UserLogin;
 import org.ocean.authservice.responses.ApiResponse;
 import org.ocean.authservice.serviceImpl.UserDetailsServiceImpl;
 import org.springframework.http.HttpStatus;

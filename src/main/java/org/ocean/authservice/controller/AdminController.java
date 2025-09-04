@@ -1,11 +1,14 @@
 package org.ocean.authservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.ocean.authservice.dao.ModifyRoles;
-import org.ocean.authservice.dao.RoleDao;
-import org.ocean.authservice.dao.UserDetailsDao;
+import org.ocean.authservice.dto.AdminUserNamesRequestDto;
+import org.ocean.authservice.dto.ModifyRoles;
+import org.ocean.authservice.dto.RoleDao;
+import org.ocean.authservice.dto.UserDetailsDao;
+import org.ocean.authservice.responses.AdminUserNamesResponseDto;
 import org.ocean.authservice.responses.ApiResponse;
 import org.ocean.authservice.responses.UserRolesResponse;
+import org.ocean.authservice.services.AdminService;
 import org.ocean.authservice.services.RolesService;
 import org.ocean.authservice.services.UserDetailsService;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,7 @@ public class AdminController {
 
     private final RolesService rolesService;
     private final UserDetailsService userDetailsService;
+    private final AdminService adminService;
 
     @PatchMapping("/modify_user_roles")
     public ResponseEntity<ApiResponse<UserRolesResponse>> modifyUserRoles(@RequestBody @Validated ModifyRoles modifyRoles) {
@@ -81,6 +85,21 @@ public class AdminController {
                         .message("successfully fetched the roles")
                         .timestamp(LocalDateTime.now())
                         .data(availableRoles)
+                        .build()
+        );
+    }
+
+    @PostMapping("/get_user_names_from_uuid")
+    public ResponseEntity<ApiResponse<List<AdminUserNamesResponseDto>>> fetchUserNamesFromUuid(@RequestBody AdminUserNamesRequestDto adminUserNamesRequest) {
+        List<AdminUserNamesResponseDto> userNamesWithUuids = adminService.getAdminUserNames(adminUserNamesRequest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ApiResponse.<List<AdminUserNamesResponseDto>>builder()
+                        .success(true)
+                        .status(HttpStatus.OK.value())
+                        .message("successfully fetched the user names")
+                        .data(userNamesWithUuids)
+                        .timestamp(LocalDateTime.now())
                         .build()
         );
     }

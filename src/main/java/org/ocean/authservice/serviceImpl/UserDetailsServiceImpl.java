@@ -3,7 +3,7 @@ package org.ocean.authservice.serviceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.ocean.authservice.constants.Roles;
-import org.ocean.authservice.dao.*;
+import org.ocean.authservice.dto.*;
 import org.ocean.authservice.entity.User;
 import org.ocean.authservice.entity.UserProfile;
 import org.ocean.authservice.exceptions.InvalidPassword;

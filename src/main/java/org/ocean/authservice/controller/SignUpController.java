@@ -2,7 +2,7 @@ package org.ocean.authservice.controller;
 
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-import org.ocean.authservice.dao.UserSignUp;
+import org.ocean.authservice.dto.UserSignUp;
 import org.ocean.authservice.responses.ApiResponse;
 import org.ocean.authservice.responses.UserRegisterSuccessResponse;
 import org.ocean.authservice.serviceImpl.UserDetailsServiceImpl;

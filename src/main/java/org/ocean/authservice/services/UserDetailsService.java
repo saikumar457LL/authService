@@ -1,6 +1,6 @@
 package org.ocean.authservice.services;
 
-import org.ocean.authservice.dao.*;
+import org.ocean.authservice.dto.*;
 import org.ocean.authservice.exceptions.InvalidPassword;
 import org.ocean.authservice.exceptions.RoleNotFoundException;
 import org.ocean.authservice.responses.UserRegisterSuccessResponse;

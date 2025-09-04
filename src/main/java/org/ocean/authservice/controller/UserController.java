@@ -2,17 +2,15 @@ package org.ocean.authservice.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.ocean.authservice.dao.UserProfileDao;
+import org.ocean.authservice.dto.UserProfileDao;
 import org.ocean.authservice.responses.ApiResponse;
 import org.ocean.authservice.services.UserDetailsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
