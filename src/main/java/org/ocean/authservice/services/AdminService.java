@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface AdminService {
 
-    List<AdminUserNamesResponseDto>  getAdminUserNames(AdminUserNamesRequestDto adminUserNamesRequestDto);
+    List<AdminUserNamesResponseDto>  fetchUserDetailsFromUuids(AdminUserNamesRequestDto adminUserNamesRequestDto);
 }

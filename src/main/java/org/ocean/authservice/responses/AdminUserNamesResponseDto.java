@@ -8,4 +8,5 @@ import lombok.Data;
 public class AdminUserNamesResponseDto {
     private String uuid;
     private String username;
+    private String email;
 }

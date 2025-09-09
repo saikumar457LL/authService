@@ -22,7 +22,7 @@ public class AdminServiceImpl implements AdminService {
     private final AdminUsernamesResponseMapper adminUsernamesResponseMapper;
 
     @Override
-    public List<AdminUserNamesResponseDto> getAdminUserNames(AdminUserNamesRequestDto adminUserNamesRequestDto) {
+    public List<AdminUserNamesResponseDto> fetchUserDetailsFromUuids(AdminUserNamesRequestDto adminUserNamesRequestDto) {
         List<User> userNamesList = userRepository.findAllByUuidIn(adminUserNamesRequestDto.getUuids().stream().map(UUID::fromString).toList());
         return adminUsernamesResponseMapper.toAdminUsersNamesResponseDto(userNamesList);
     }

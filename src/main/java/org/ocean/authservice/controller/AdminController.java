@@ -89,9 +89,9 @@ public class AdminController {
         );
     }
 
-    @PostMapping("/get_user_names_from_uuid")
+    @PostMapping("/get_user_details_from_uuid")
     public ResponseEntity<ApiResponse<List<AdminUserNamesResponseDto>>> fetchUserNamesFromUuid(@RequestBody AdminUserNamesRequestDto adminUserNamesRequest) {
-        List<AdminUserNamesResponseDto> userNamesWithUuids = adminService.getAdminUserNames(adminUserNamesRequest);
+        List<AdminUserNamesResponseDto> userNamesWithUuids = adminService.fetchUserDetailsFromUuids(adminUserNamesRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 ApiResponse.<List<AdminUserNamesResponseDto>>builder()
