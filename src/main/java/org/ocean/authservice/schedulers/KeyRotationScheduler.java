@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class KeyRotationScheduler {
     private final KeyManager keyManager;
 
-    @Scheduled(cron = "0 0/5 * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void rotateKeys() throws NoSuchAlgorithmException {
         keyManager.markCurrentKeyAsRetired();
         log.info("Rotating keys");
